@@ -90,7 +90,7 @@ export function getComponents() {
     });
 
     const setValue = CompClass.prototype.setValue;
-    CompClass.prototype.setValue = (function (...args) {
+    CompClass.prototype.setValue = (function (...args: any[]) {
       if (this.materialComponent) {
         this.materialComponent.setValue(args[0]);
       }
@@ -123,7 +123,7 @@ export function registerComponent(name: string, CompClass: any) {
   });
 
   const setValue = formIOComp.prototype.setValue;
-  formIOComp.prototype.setValue = (function (...args) {
+  formIOComp.prototype.setValue = (function (...args: any[]) {
     if (this.materialComponent) {
       this.materialComponent.setValue(args[0]);
     }

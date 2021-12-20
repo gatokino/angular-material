@@ -15,9 +15,9 @@ import TabsComponent from 'formiojs/components/tabs/Tabs.js';
   `
 })
 export class MaterialTabsComponent extends MaterialNestedComponent {
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     super.setInstance(instance);
-    instance.viewContainer = (component) => {
+    instance.viewContainer = (component : any) => {
       return this.viewContainers ? this.viewContainers[component.tab] : null;
     };
   }

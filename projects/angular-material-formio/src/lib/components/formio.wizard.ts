@@ -24,11 +24,11 @@ import { MaterialNestedComponent } from './MaterialNestedComponent';
     </mat-horizontal-stepper>`
 })
 export class MaterialWizardComponent extends MaterialNestedComponent {
-  @ViewChild('stepper', {static: true}) stepper: MatStepper;
+  @ViewChild('stepper', {static: true}) stepper?: MatStepper;
   public isLinear = true;
   private prevNumOfPages = 0;
 
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     this.isLinear = (
       instance.options &&
       instance.options.breadcrumbSettings &&
@@ -43,7 +43,7 @@ export class MaterialWizardComponent extends MaterialNestedComponent {
 
   updatePages(instance = this.instance) {
     if (this.prevNumOfPages !== instance.pages.length) {
-      instance.pages.forEach((page, pageIndex) => {
+      instance.pages.forEach((page : any, pageIndex : any) => {
         page.viewContainer = () => {
           return this.viewContainers ? this.viewContainers[pageIndex] : null;
         };
@@ -54,24 +54,25 @@ export class MaterialWizardComponent extends MaterialNestedComponent {
 
   resetWizard() {
     this.instance.cancel();
-    this.stepper.reset();
+    if(this.stepper)
+      this.stepper.reset();
   }
 
   nextPage() {
-    this.instance.nextPage().then(() => this.stepper.next());
+    this.instance.nextPage().then(() => {if(this.stepper) this.stepper.next()});
   }
 
   prevPage() {
-    this.instance.prevPage().then(() => this.stepper.previous());
+    this.instance.prevPage().then(() => { if(this.stepper) this.stepper.previous()});
   }
 
   submit() {
     this.instance.submit();
   }
 
-  renderComponents() {
+  override renderComponents() {
     if (this.instance.renderComponents && this.instance.pages) {
-      this.instance.renderComponents(this.instance.pages.reduce((comps, page) => {
+      this.instance.renderComponents(this.instance.pages.reduce((comps : any, page : any) => {
         return comps.concat(page.components);
       }, []));
     }

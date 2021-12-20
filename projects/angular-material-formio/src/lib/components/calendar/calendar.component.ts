@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, ViewChild } from '@angular/core';
 import { MaterialComponent } from '../MaterialComponent';
 @Component({
   selector: 'mat-formio-calendar',
@@ -49,10 +49,10 @@ export class MaterialCalendarComponent extends MaterialComponent {
   public selectedTime: any;
   public selectedTimeComponent: any;
 
-  @ViewChild('time') time;
+  @ViewChild('time') time?: MaterialComponent;
 
-  @Input() enableDate: boolean;
-  @Input() enableTime: boolean;
+  @Input() enableDate?: boolean;
+  @Input() enableTime?: boolean;
   @Input() minDate: any;
   @Input() maxDate: any;
   @Input() dateFilter: any;
@@ -61,25 +61,26 @@ export class MaterialCalendarComponent extends MaterialComponent {
   @Output() timeSelectEvent = new EventEmitter<any>();
   @Output() dateSelectEvent = new EventEmitter<any>();
 
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     super.setInstance(instance);
   }
 
-  setExistedDate(value) {
+  setExistedDate(value: any) {
     this.selectedDate = value;
   }
 
-  setExistedTime(value, forTime) {
+  setExistedTime(value: any, forTime: any) {
     this.selectedTime = value;
-    this.time.setValue(forTime);
+    if (this.time)
+      this.time.setValue(forTime);
   }
 
-  onDate(event){
+  onDate(event: any) {
     this.selectedDate = event;
     this.dateSelectEvent.emit(this.selectedDate);
   }
 
-  onTime(event) {
+  onTime(event: any) {
     this.selectedTime = event.value;
     this.timeSelectEvent.emit(this.selectedTime);
   }

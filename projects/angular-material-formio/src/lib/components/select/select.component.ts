@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MaterialComponent } from '../MaterialComponent';
 import SelectComponent from 'formiojs/components/select/Select.js';
-import _ from 'lodash';
+import isEqual from 'lodash-es/isEqual';
 @Component({
   selector: 'mat-formio-select',
   template: `
@@ -24,7 +24,7 @@ import _ from 'lodash';
                 [compareWith]="compareObjects"
         >
           <div class="mat-option">
-            <input class="mat-input-element" placeholder="Type to search" (input)="onFilter($event.target.value)">
+            <input class="mat-input-element" placeholder="Type to search" (input)="onFilter($event.target)">
           </div>
           <mat-option *ngIf="!filteredOptionsLength" disabled>
             <span>Nothing was found</span>
@@ -43,18 +43,18 @@ import _ from 'lodash';
   `
 })
 export class MaterialSelectComponent extends MaterialComponent implements OnInit {
-  selectOptions: Promise<any[]>;
-  filteredOptions: Promise<any[]>;
-  filteredOptionsLength: number;
-  
+  selectOptions?: Promise<any[]>;
+  filteredOptions?: Promise<any[]>;
+  filteredOptionsLength?: number;
+
   selectOptionsResolve: any;
 
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     super.setInstance(instance);
     this.instance.triggerUpdate();
   }
 
-  ngOnInit() {
+  override ngOnInit() {
     this.selectOptions = new Promise((resolve) => {
       this.selectOptionsResolve = resolve;
     });
@@ -65,23 +65,26 @@ export class MaterialSelectComponent extends MaterialComponent implements OnInit
     this.filteredOptions = this.selectOptions;
   }
 
-  onFilter(value) {
-    this.filteredOptions = this.selectOptions.then((options) => {
-      const filtered =  options.filter((option) => option.label.indexOf(value) !== -1);
-      this.filteredOptionsLength = filtered.length;
-      return filtered;
-    })
+  onFilter(target: any) {
+    let value = target & target.value;
+    if (this.selectOptions) {
+      this.filteredOptions = this.selectOptions.then((options) => {
+        const filtered = options.filter((option) => option.label.indexOf(value) !== -1);
+        this.filteredOptionsLength = filtered.length;
+        return filtered;
+      })
+    }
   }
 
   compareObjects(o1: any, o2: any): boolean {
-    return _.isEqual(o1, o2);
+    return isEqual(o1, o2);
   }
 }
 SelectComponent.MaterialComponent = MaterialSelectComponent;
 
 // Make sure we detect changes when new items make their way into the select dropdown.
 const setItems = SelectComponent.prototype.setItems;
-SelectComponent.prototype.setItems = function(...args) {
+SelectComponent.prototype.setItems = function (...args: any) {
   setItems.call(this, ...args);
   if (this.materialComponent && this.materialComponent.selectOptionsResolve) {
     this.materialComponent.selectOptionsResolve(this.selectOptions);

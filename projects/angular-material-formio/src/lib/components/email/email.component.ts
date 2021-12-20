@@ -6,7 +6,7 @@ import EmailComponent from 'formiojs/components/email/Email.js';
   template: TEXTFIELD_TEMPLATE
 })
 export class MaterialEmailComponent extends MaterialTextfieldComponent {
-  public inputType = 'email';
+  public override inputType = 'email';
 }
 EmailComponent.MaterialComponent = MaterialEmailComponent;
 export { EmailComponent };

@@ -6,29 +6,32 @@ import { MaterialComponent } from './MaterialComponent';
   template: '<ng-template #components></ng-template>'
 })
 export class MaterialNestedComponent extends MaterialComponent implements AfterViewInit {
-  public viewContainers;
-  @ViewChildren('components', {read: ViewContainerRef}) components: QueryList<ViewContainerRef>;
-  setInstance(instance: any) {
+  public viewContainers?: ViewContainerRef[];
+  @ViewChildren('components', { read: ViewContainerRef }) components?: QueryList<ViewContainerRef>;
+  override setInstance(instance: any) {
     instance.viewContainer = () => {
       return this.viewContainers ? this.viewContainers[0] : null;
     };
     super.setInstance(instance);
   }
 
-  renderComponents() {
+
+  override renderComponents() {
     if (this.instance.renderComponents) {
       this.instance.renderComponents();
     }
   }
 
   render() {
-    this.viewContainers = this.components.toArray();
+    if (this.components)
+      this.viewContainers = this.components.toArray();
     this.renderComponents();
     this.ref.detectChanges();
   }
 
-  ngAfterViewInit() {
-    this.components.changes.subscribe(() => this.render());
+  override ngAfterViewInit() {
+    if (this.components)
+      this.components.changes.subscribe(() => this.render());
     this.render();
   }
 }

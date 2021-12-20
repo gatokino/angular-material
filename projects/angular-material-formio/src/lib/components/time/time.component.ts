@@ -73,7 +73,7 @@ export class MaterialTimeComponent extends MaterialComponent {
   @Input() secondStep = 1;
   @Input() renderElementOnly = false;
 
-  setDisabled(disabled) {
+  override setDisabled(disabled: any) {
     if (disabled) {
       this.hourControl.disable();
       this.minuteControl.disable();
@@ -87,13 +87,13 @@ export class MaterialTimeComponent extends MaterialComponent {
     return format;
   }
 
-  setInstance(instance) {
+  override setInstance(instance : any) {
     super.setInstance(instance);
     // this.control.setValue('00:00:00');
     this.onChange();
   }
 
-  onChange() {
+  override onChange() {
     const hours = this.hourControl.value;
     const minutes = this.minuteControl.value || '00';
     const seconds = this.secondControl.value || '';
@@ -111,7 +111,7 @@ export class MaterialTimeComponent extends MaterialComponent {
     this.selectedEvent.emit(this.control);
   }
 
-  setValue(value) {
+  override setValue(value : any) {
     if (!value) {
       return;
     }
@@ -123,7 +123,7 @@ export class MaterialTimeComponent extends MaterialComponent {
     this.period = period === ('AM' || 'PM') ? period : this.period;
   }
 
-  getTwentyFourHourTime(amPmString) {
+  getTwentyFourHourTime(amPmString : string) {
     const moment = moment_;
     return moment(amPmString, ['h:mm:ss A']).format(this.dataFormat);
   }

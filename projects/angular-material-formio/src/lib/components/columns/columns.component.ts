@@ -26,15 +26,15 @@ import ColumnsComponent from 'formiojs/components/columns/Columns.js';
 export class MaterialColumnsComponent extends MaterialNestedComponent {
   public flexGap = 0.5;
   public totalSpace = 0;
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     this.totalSpace = 100 - ((instance.component.columns.length - 1) * this.flexGap);
     super.setInstance(instance);
-    instance.viewContainer = (component) => {
+    instance.viewContainer = (component : any) => {
       return this.viewContainers ? this.viewContainers[component.column] : null;
     };
   }
 
-  flexWidth(column, index) {
+  flexWidth(column : any, index : any) {
     if (index >= (this.instance.component.columns.length - 1)) {
       return Math.ceil(((parseFloat(column.width) / 12) * this.totalSpace)) + '%';
     } else {

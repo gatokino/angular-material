@@ -1,8 +1,8 @@
-import {Component, Input, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, OnInit} from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit, OnInit } from '@angular/core';
 import FormioComponent from './Base';
 import Validator from 'formiojs/validator/Validator.js';
 import { FormioControl } from '../FormioControl';
-import get from 'lodash/get';
+import get from 'lodash-es/get';
 
 @Component({
   selector: 'mat-formio-comp',
@@ -10,9 +10,9 @@ import get from 'lodash/get';
 })
 export class MaterialComponent implements AfterViewInit, OnInit {
   @Input() instance: any;
-  @ViewChild('input') input: ElementRef;
+  @ViewChild('input') input?: ElementRef;
   @Input() control: FormioControl = new FormioControl();
-  constructor(public element: ElementRef, public ref: ChangeDetectorRef) {}
+  constructor(public element: ElementRef, public ref: ChangeDetectorRef) { }
 
   setInstance(instance: any) {
     this.control.setInstance(instance);
@@ -34,7 +34,7 @@ export class MaterialComponent implements AfterViewInit, OnInit {
   }
 
   validateOnInit() {
-    const {key} = this.instance.component;
+    const { key } = this.instance.component;
     const validationValue = this.getFormValue(this.instance.path);
 
     if (validationValue === null) {
@@ -45,8 +45,8 @@ export class MaterialComponent implements AfterViewInit, OnInit {
 
     const validationResult = Validator.checkComponent(
       this.instance,
-      {[key]: validationValue},
-      {[key]: validationValue}
+      { [key]: validationValue },
+      { [key]: validationValue }
     );
 
     if (validationResult.length) {
@@ -64,17 +64,18 @@ export class MaterialComponent implements AfterViewInit, OnInit {
     }
   }
 
-  getFormValue(path) {
-    const formData = JSON.parse(sessionStorage.getItem('formData'));
-
-    if (!formData) {
-      return null;
+  getFormValue(path: any) {
+    let rawFormData = sessionStorage.getItem('formData');
+    if (rawFormData) {
+      const formData = JSON.parse(rawFormData);
+      if (formData) {
+        return get(formData, path);
+      }
     }
-
-    return get(formData, path);
+    return null;
   }
 
-  renderComponents() {}
+  renderComponents() { }
 
   onChange(keepInputRaw?: boolean) {
     let value = this.getValue();
@@ -88,14 +89,14 @@ export class MaterialComponent implements AfterViewInit, OnInit {
       this.control.setValue(this.input.nativeElement.value);
       value = this.getValue();
     }
-    this.instance.updateValue(value, {modified: true});
+    this.instance.updateValue(value, { modified: true });
   }
 
   getValue() {
     return this.control.value;
   }
 
-  setValue(value) {
+  setValue(value: any) {
     this.control.setValue(value);
   }
 
@@ -116,7 +117,7 @@ export class MaterialComponent implements AfterViewInit, OnInit {
       || this.instance.parent.options.validateOnInit;
   }
 
-  setDisabled(disabled) {
+  setDisabled(disabled : any) {
     if (disabled) {
       this.control.disable();
     } else {
@@ -124,7 +125,7 @@ export class MaterialComponent implements AfterViewInit, OnInit {
     }
   }
 
-  setVisible(visible) {
+  setVisible(visible : any) {
     if (this.element && this.element.nativeElement) {
       if (visible) {
         this.element.nativeElement.removeAttribute('hidden');

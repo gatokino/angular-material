@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core'
 import { MaterialComponent } from '../MaterialComponent';
 import DateTimeComponent from 'formiojs/components/datetime/DateTime.js';
 import { momentDate } from 'formiojs/utils/utils.js';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 @Component({
   selector: 'mat-formio-date',
   host: {
@@ -71,12 +71,12 @@ import {FormControl} from '@angular/forms';
 export class MaterialDateComponent extends MaterialComponent {
   public timeControl: FormControl = new FormControl();
   public displayControl: FormControl = new FormControl();
-  public isPickerOpened: boolean;
+  public isPickerOpened?: boolean;
   public selectedDate: any;
   public selectedTime: any = '00:00';
   public allowManualInput: boolean = true;
 
-  @ViewChild('calendar') calendar;
+  @ViewChild('calendar') calendar?: any;
 
   get enableDate() {
     return this.instance && this.instance.component.enableDate !== false;
@@ -86,7 +86,7 @@ export class MaterialDateComponent extends MaterialComponent {
     return this.instance && this.instance.component.enableTime === true;
   }
 
-  setDisplayControlValue(value = null) {
+  setDisplayControlValue(value : any = null) {
     const format = `YYYY-MM-DD${this.enableTime ? 'THH:mm' : ''}`;
     value = value || this.getDateTimeValue();
 
@@ -98,13 +98,13 @@ export class MaterialDateComponent extends MaterialComponent {
     }
   }
 
-  onChangeDate(event) {
+  onChangeDate(event: any) {
     this.selectedDate = momentDate(event).utc().format();
     this.control.setValue(this.selectedDate);
     this.setDateTime();
   }
 
-  onChangeTime(time) {
+  onChangeTime(time: any) {
     this.selectedTime = time;
     if (this.selectedDate || (this.enableTime && !this.enableDate)) {
       this.setDateTime();
@@ -113,7 +113,7 @@ export class MaterialDateComponent extends MaterialComponent {
 
   onChangeInput() {
     const value = this.dateFilter(this.displayControl.value) &&
-    this.checkMinMax(this.displayControl.value) ? this.displayControl.value : '';
+      this.checkMinMax(this.displayControl.value) ? this.displayControl.value : '';
 
     this.control.setValue(value);
     this.onChange();
@@ -135,11 +135,11 @@ export class MaterialDateComponent extends MaterialComponent {
     if (this.enableTime && this.enableDate) {
       const [hours, minutes] = this.selectedTime.split(':');
       newDate = isSelectedTime
-          ? momentDate(this.selectedDate)
-           .hours(Number.parseInt(hours))
-           .minutes(Number.parseInt(minutes))
-           .utc()
-          : this.selectedDate;
+        ? momentDate(this.selectedDate)
+          .hours(Number.parseInt(hours))
+          .minutes(Number.parseInt(minutes))
+          .utc()
+        : this.selectedDate;
     }
 
     if (!this.enableTime && this.enableDate) {
@@ -163,7 +163,7 @@ export class MaterialDateComponent extends MaterialComponent {
     this.onChange();
   }
 
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     super.setInstance(instance);
     this.isDisabled() ? this.control.disable() : this.control.enable();
     this.isDisabled() ? this.displayControl.disable() : this.displayControl.enable();
@@ -171,7 +171,7 @@ export class MaterialDateComponent extends MaterialComponent {
     if (this.instance) {
       this.allowManualInput = this.instance.component.allowInput === false ? false : true;
       if (this.instance.component && this.instance.component.datePicker) {
-        const {minDate: min, maxDate: max} = this.instance.component.datePicker;
+        const { minDate: min, maxDate: max } = this.instance.component.datePicker;
 
         // It improves the date to the full format if the customer set only a year. Otherwise we will have conflicts into the moment.js.
         const { minDate, maxDate } = this.improveMinMaxDate(min, max);
@@ -181,11 +181,11 @@ export class MaterialDateComponent extends MaterialComponent {
     }
   }
 
-  toggleCalendar(event) {
+  toggleCalendar(event: any) {
     if (!this.isDisabled()) {
       if (!this.isPickerOpened) {
         const date = this.getValue();
-        if (date &&this.checkMinMax(date)) {
+        if (date && this.checkMinMax(date)) {
           if (this.enableDate && this.calendar && !this.calendar.selectedDate) {
             this.calendar.setExistedDate(momentDate(date).toDate())
           }
@@ -206,31 +206,31 @@ export class MaterialDateComponent extends MaterialComponent {
     return readonly || disabled || this.instance.root.options.readOnly
   }
 
-  public formatTime = (value) => {
+  public formatTime = (value: any) => {
     if (!value) {
       return this.instance.emptyValue;
     }
     return momentDate(value).format(this.instance.component.format);
   }
 
-  setValue(value) {
+  override setValue(value: any) {
     if (this.dateFilter(value) && this.checkMinMax(value)) {
       this.setDisplayControlValue(value);
       super.setValue(value);
     }
   }
 
-  onChange() {
+  override onChange() {
     const value = this.dateFilter(this.getValue()) && this.checkMinMax(this.getValue()) ? this.getValue() : '';
     this.setDisplayControlValue(value);
   }
 
-  beforeSubmit() {
+  override beforeSubmit() {
     this.onChange();
     super.beforeSubmit();
   }
 
-  checkMinMax(value) {
+  checkMinMax(value: any) {
     let isValid = true;
     const { minDate: min, maxDate: max } = this.instance.component.datePicker;
     const { minDate, maxDate } = this.improveMinMaxDate(min, max);
@@ -244,7 +244,7 @@ export class MaterialDateComponent extends MaterialComponent {
     return isValid;
   }
 
-  disableWeekends(d: Date) {
+  disableWeekends(d: Date | null) {
     if (d && d.getDay) {
       const day = d.getDay();
       return day !== 0 && day !== 6;
@@ -252,9 +252,12 @@ export class MaterialDateComponent extends MaterialComponent {
     return true;
   }
 
-  disableDates(dates: Array<string>, d: Date) {
-    const formattedDates = dates.map((date) => momentDate(date).format('YYYY-MM-DD'));
-    return !formattedDates.includes(momentDate(d).format('YYYY-MM-DD'));
+  disableDates(dates: Array<string>, d: Date | null) {
+    if (d) {
+      const formattedDates = dates.map((date) => momentDate(date).format('YYYY-MM-DD'));
+      return !formattedDates.includes(momentDate(d).format('YYYY-MM-DD'));
+    }
+    return true;
   }
 
   dateFilter = (d: Date | null): boolean => {
@@ -263,12 +266,12 @@ export class MaterialDateComponent extends MaterialComponent {
       this.disableDates(this.instance.component.widget.disabledDates.split(','), d) : isValid;
   }
 
-  clickOutside(event) {
+  clickOutside(event: any) {
     if (!this.calendar.element.nativeElement.contains(event.target) && this.isPickerOpened)
       this.toggleCalendar(event);
   }
 
-  improveMinMaxDate(minDate, maxDate) {
+  improveMinMaxDate(minDate: any, maxDate: any) {
     if (minDate && minDate.length === 4) {
       minDate = momentDate(`${minDate}-01-01`).format('YYYY-MM-DD');
     }
@@ -276,7 +279,7 @@ export class MaterialDateComponent extends MaterialComponent {
     if (maxDate && maxDate.length === 4) {
       maxDate = momentDate(`${maxDate}-01-01`).subtract(1, 'day').format('YYYY-MM-DD');
     }
-    return {minDate, maxDate};
+    return { minDate, maxDate };
   }
 }
 DateTimeComponent.MaterialComponent = MaterialDateComponent;

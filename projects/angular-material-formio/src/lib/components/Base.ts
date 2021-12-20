@@ -2,7 +2,7 @@ import FormioComponent from 'formiojs/components/_classes/component/Component.js
 
 export default (() => {
   const beforeSubmit = FormioComponent.prototype.beforeSubmit;
-  FormioComponent.prototype.beforeSubmit = function(...args) {
+  FormioComponent.prototype.beforeSubmit = function(...args: any) {
     if (this.materialComponent) {
       this.materialComponent.beforeSubmit();
     }

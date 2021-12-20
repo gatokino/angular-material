@@ -51,18 +51,18 @@ export class MaterialTagsComponent extends MaterialComponent {
     this.onChange();
   }
 
-  remove(index): void {
+  remove(index: number): void {
     if (index >= 0 && index < this.tags.length) {
       this.tags.splice(index, 1);
     }
     this.onChange();
   }
 
-  getValue() {
+  override getValue() {
     return (this.instance.component.storeas === 'string') ? this.tags.join(this.instance.delimiter) : this.tags;
   }
 
-  setValue(value) {
+  override setValue(value: any) {
     if (typeof value === 'string') {
       value = value.split(this.instance.delimiter);
     }

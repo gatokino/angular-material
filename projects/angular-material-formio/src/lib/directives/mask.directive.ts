@@ -14,14 +14,14 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
   ]
 })
 export class MaskDirective {
-  @Input('matMask') format: (value: string) => string;
-  private _value: string | null;
+  @Input('matMask') format?: (value: string) => string;
+  private _value?: string | null;
 
   constructor(private elementRef: ElementRef<HTMLInputElement>) {}
 
 
   get value(): string | null {
-    return this._value;
+    return this._value ? this._value : null;
   }
 
   @Input('value')
@@ -31,7 +31,7 @@ export class MaskDirective {
   }
 
   private formatValue(value: string | null) {
-    if (value !== null) {
+    if ((value !== null) && (this.format)) {
       this.elementRef.nativeElement.value = this.format(value);
     }
     else {
@@ -44,7 +44,8 @@ export class MaskDirective {
 
   writeValue(value: any) {
     this._value = value;
-    this.formatValue(this._value); // format Value
+    if(this._value)
+      this.formatValue(this._value); // format Value
   }
 
   registerOnChange(fn: (value: any) => void) {

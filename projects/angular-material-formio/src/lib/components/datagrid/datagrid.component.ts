@@ -2,8 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MaterialNestedComponent } from '../MaterialNestedComponent';
 import DataGridComponent from 'formiojs/components/datagrid/DataGrid.js';
-import {CdkDragDrop, moveItemInArray, DragDropModule} from '@angular/cdk/drag-drop';
-import {MatTable} from '@angular/material/table';
+import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTable } from '@angular/material/table';
 @Component({
   selector: 'mat-formio-datagrid',
   template: `
@@ -83,44 +83,47 @@ import {MatTable} from '@angular/material/table';
   ]
 })
 export class MaterialDataGridComponent extends MaterialNestedComponent {
-  displayedColumns: string[];
-  formColumns: string[];
+  displayedColumns?: string[];
+  formColumns?: string[];
   columns: any;
   dataSource = new MatTableDataSource();
 
-  getColumnLabel(column) {
+  getColumnLabel(column: any) {
     return column.label || column.key;
   }
 
-  setInstance(instance: any) {
+  override setInstance(instance: any) {
     super.setInstance(instance);
     this.dataSource.data = instance.dataValue;
     this.columns = {};
     this.displayedColumns = [];
     this.formColumns = [];
-    instance.getColumns().map((column) => {
-      this.formColumns.push(column.key);
-      this.displayedColumns.push(column.key);
+    instance.getColumns().map((column: any) => {
+      if (this.formColumns)
+        this.formColumns.push(column.key);
+      if (this.displayedColumns)
+        this.displayedColumns.push(column.key);
       this.columns[column.key] = column;
     });
     this.displayedColumns.push('__removeRow');
     if (this.instance.component.reorder) {
       this.displayedColumns.push('position');
     }
-    instance.viewContainer = (component) => {
+    instance.viewContainer = (component: any) => {
       let viewContainer;
       if (this.instance.component.disabled) {
         component.component.disabled = true;
       }
-      this.viewContainers.forEach((container) => {
-        const td = container.element.nativeElement.parentNode;
-        if (
-          component.rowIndex === parseInt(td.getAttribute('rowIndex'), 10) &&
-          component.component.key === td.getAttribute('component')
-        ) {
-          viewContainer = container;
-        }
-      });
+      if (this.viewContainers)
+        this.viewContainers.forEach((container) => {
+          const td = container.element.nativeElement.parentNode;
+          if (
+            component.rowIndex === parseInt(td.getAttribute('rowIndex'), 10) &&
+            component.component.key === td.getAttribute('component')
+          ) {
+            viewContainer = container;
+          }
+        });
 
       return viewContainer ? viewContainer : null;
     };
@@ -141,7 +144,7 @@ export class MaterialDataGridComponent extends MaterialNestedComponent {
     }
   }
 
-  removeRow(index) {
+  removeRow(index : number) {
     this.instance.removeRow(index);
     this.dataSource.data.splice(index, 1);
     this.dataSource.data = [...this.dataSource.data];
@@ -153,12 +156,12 @@ export class MaterialDataGridComponent extends MaterialNestedComponent {
     this.renderComponents();
   }
 
-  renderComponents() {
+  override renderComponents() {
     this.instance.getRows();
     this.instance.setValue(this.control.value || []);
   }
 
-  setValue(value: [] | null) {
+  override setValue(value: [] | null) {
     const gridLength = value ? value.length : 0;
 
     while (this.instance.rows.length < gridLength) {

@@ -38,11 +38,11 @@ export class MaterialRadioComponent extends MaterialComponent {
     return this.instance.component.inline ? 'row' : 'column';
   }
 
-  isRadioChecked(option) {
+  isRadioChecked(option : any) {
     return option.value === this.instance.dataValue;
   }
 
-  clearValue(event, option) {
+  clearValue(event : any, option : any) {
     if (this.isRadioChecked(option)) {
       event.preventDefault();
       this.deselectValue();

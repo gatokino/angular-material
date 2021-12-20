@@ -39,15 +39,15 @@ import SignatureComponent from 'formiojs/components/signature/Signature.js';
   `
 })
 export class MaterialSignatureComponent extends MaterialComponent implements AfterViewInit {
-  @ViewChild('signature') signatureElement: ElementRef;
+  @ViewChild('signature') signatureElement?: ElementRef;
 
-  renderComponents() {
+  override renderComponents() {
     if (this.signatureElement) {
       this.instance.attach(this.signatureElement.nativeElement);
     }
   }
 
-  ngAfterViewInit() {
+  override ngAfterViewInit() {
     this.renderComponents();
   }
 }

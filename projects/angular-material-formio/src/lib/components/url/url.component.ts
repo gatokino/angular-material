@@ -6,7 +6,7 @@ import UrlComponent from 'formiojs/components/url/Url.js';
   template: TEXTFIELD_TEMPLATE
 })
 export class MaterialUrlComponent extends MaterialTextfieldComponent {
-  public inputType = 'url';
+  public override inputType = 'url';
 }
 UrlComponent.MaterialComponent = MaterialUrlComponent;
 export { UrlComponent };

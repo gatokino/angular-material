@@ -10,18 +10,18 @@ import { MaterialNestedComponent } from '../MaterialNestedComponent';
 import EditGridComponent from 'formiojs/components/editgrid/EditGrid.js';
 import { FormioComponent } from '../../formio.component';
 import Components from 'formiojs/components/Components';
-import isString from 'lodash/isString';
+import isString from 'lodash-es/isString';
 
 enum EditRowState {
   NEW = 'new',
-  EDITING ='editing',
+  EDITING = 'editing',
   SAVED = 'saved',
   REMOVED = 'removed',
   DRAFT = 'draft'
 };
 
 /* tslint:disable no-bitwise only-arrow-functions */
-const hashCode = function(str) {
+const hashCode = function (str: string) {
   let hash = 0;
   let i = 0;
   let chr;
@@ -30,8 +30,8 @@ const hashCode = function(str) {
     return hash;
   }
   for (i = 0; i < str.length; i++) {
-    chr   = str.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
+    chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
     hash |= 0; // Convert to 32bit integer
   }
   return hash;
@@ -40,12 +40,12 @@ const hashCode = function(str) {
 
 // Do nothing to createRowComponents, let mat-formio handle it.
 /* tslint:disable only-arrow-functions */
-EditGridComponent.prototype.createRowComponents = function() {
+EditGridComponent.prototype.createRowComponents = function () {
   return [];
 };
 
 const checkRow = EditGridComponent.prototype.checkRow;
-EditGridComponent.prototype.checkRow = function(data, editRow, flags: any = {}) {
+EditGridComponent.prototype.checkRow = function (data: any, editRow: any, flags: any = {}) {
   if (flags.checkRow) {
     return checkRow.call(this, data, editRow, flags);
   } else {
@@ -89,19 +89,19 @@ const DEFAULT_ROW_TEMPLATES = [
   templateUrl: './editgrid.component.html'
 })
 export class MaterialEditGridComponent extends MaterialNestedComponent implements AfterViewInit {
-  @ViewChild('header') headerElement: ElementRef;
-  @ViewChild('footer') footerElement: ElementRef;
-  @ViewChildren('rows') rowElements: QueryList<ElementRef>;
-  @ViewChildren('forms') forms: QueryList<FormioComponent>;
-  public header: string;
-  public footer: string;
-  public displayedColumns: string[];
+  @ViewChild('header') headerElement?: ElementRef;
+  @ViewChild('footer') footerElement?: ElementRef;
+  @ViewChildren('rows') rowElements?: QueryList<ElementRef>;
+  @ViewChildren('forms') forms?: QueryList<FormioComponent>;
+  public header?: string;
+  public footer?: string;
+  public displayedColumns?: string[];
   public columns: any = {};
   public colWidth = 0;
   public valid = true;
   public RowStates = EditRowState;
 
-  getRowTemplate(content) {
+  getRowTemplate(content: any) {
     return `<mat-list style="display: flex;">
       {% (components || []).forEach(function(component) { %}
         {% if (!component.hasOwnProperty('tableView') || component.tableView) { %}
@@ -109,9 +109,9 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
         {% } %}
       {% }) %}
     </mat-list>`;
-}
+  }
 
-  validate(index) {
+  validate(index: any) {
     if (!this.forms) {
       return;
     }
@@ -120,7 +120,7 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
       return;
     }
     const formioComponent = forms[index];
-    const {data} = formioComponent.formio.submission;
+    const { data } = formioComponent.formio.submission;
     const isInvalid = Object.keys(data).some(
       value => isString(data[value]) && data[value].length === 0
     );
@@ -132,7 +132,7 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
     }
   }
 
-  setInstance(instance) {
+  override setInstance(instance: any) {
     if (
       instance.component.templates.header &&
       (DEFAULT_HEADER_TEMPLATES.indexOf(hashCode(instance.component.templates.header)) !== -1)
@@ -146,14 +146,14 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
       instance.component.templates.row = this.getRowTemplate('{{ getView(component, row[component.key]) }}');
     }
 
-    this.displayedColumns = instance.component.components.map((comp) => {
+    this.displayedColumns = instance.component.components.map((comp: any) => {
       if (comp.hasOwnProperty('tableView') && !comp.tableView) {
         return false;
       }
 
       this.columns[comp.key] = comp;
       return comp.key;
-    }).filter(name => !!name);
+    }).filter((name: any) => !!name);
     const dataValue = instance.dataValue || [];
     this.colWidth = instance.component.components.length ? Math.floor(100 / instance.component.components.length) : 100;
     if (instance.component.templates && instance.component.templates.header) {
@@ -171,8 +171,10 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
       });
     }
     setTimeout(() => {
-      this.renderTemplate(this.headerElement, this.header);
-      this.renderTemplate(this.footerElement, this.footer);
+      if (this.headerElement)
+        this.renderTemplate(this.headerElement, this.header);
+      if (this.footerElement)
+        this.renderTemplate(this.footerElement, this.footer);
     }, 0);
     super.setInstance(instance);
   }
@@ -181,7 +183,7 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
     const row = this.instance.addRow();
   }
 
-  editRow(row, index) {
+  editRow(row: any, index: any) {
     const { state } = row;
     const { NEW, REMOVED } = this.RowStates;
 
@@ -189,9 +191,11 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
       return;
     }
     this.instance.editRow(index);
-    const forms = this.forms.toArray();
-    if (forms[index]) {
-      forms[index].formio.submission = {data: JSON.parse(JSON.stringify(row.data))};
+    if (this.forms) {
+      const forms = this.forms.toArray();
+      if (forms[index]) {
+        forms[index].formio.submission = { data: JSON.parse(JSON.stringify(row.data)) };
+      }
     }
   }
 
@@ -201,9 +205,9 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
    * @param row
    * @param index
    */
-  updateRowTemplate(rowElement: ElementRef, index, comps) {
+  updateRowTemplate(rowElement: ElementRef, index : any, comps: any) {
     const self = this;
-    const editRow: any = {...this.instance.editRows[index]};
+    const editRow: any = { ...this.instance.editRows[index] };
     if (editRow.state !== this.RowStates.NEW) {
       this.renderTemplate(rowElement, this.instance.renderString(this.instance.component.templates.row, {
         row: this.instance.dataValue[index] || {},
@@ -211,7 +215,7 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
         rowIndex: index,
         colWidth: this.colWidth,
         components: this.instance.component.components,
-        getView: function getView(component, data) {
+        getView: function getView(component : any, data : any) {
           if (!comps[component.type]) {
             comps[component.type] = Components.create(component, {}, {}, true);
           }
@@ -227,36 +231,41 @@ export class MaterialEditGridComponent extends MaterialNestedComponent implement
    * @param row - The edit grid row.
    * @param index - The index for this row.
    */
-  saveRow(row, index) {
-    const forms = this.forms.toArray();
-    if (forms[index]) {
-      const formioComponent = forms[index];
-      row.data = JSON.parse(JSON.stringify(formioComponent.formio.submission.data));
-      this.instance.saveRow(index);
-      const rows = this.rowElements.toArray();
-      if (rows && rows[index]) {
-        this.updateRowTemplate(rows[index], index, {});
+  saveRow(row: any, index: any) {
+    if (this.forms) {
+      const forms = this.forms.toArray();
+      if (forms[index]) {
+        const formioComponent = forms[index];
+        row.data = JSON.parse(JSON.stringify(formioComponent.formio.submission.data));
+        this.instance.saveRow(index);
+        if (this.rowElements) {
+          const rows = this.rowElements.toArray();
+          if (rows && rows[index]) {
+            this.updateRowTemplate(rows[index], index, {});
+          }
+        }
       }
     }
   }
 
-  cancelRow(index) {
+  cancelRow(index: any) {
     this.instance.cancelRow(index);
     this.valid = true;
   }
 
-  renderTemplate(element: ElementRef, template) {
+  renderTemplate(element: ElementRef, template: any) {
     if (!element || !element.nativeElement) {
       return;
     }
     element.nativeElement.innerHTML = template;
   }
 
-  ngAfterViewInit() {
-    this.rowElements.changes.subscribe((rows: QueryList<ElementRef>) => {
-      const rowCache = {};
-      rows.forEach((row: ElementRef, index) => this.updateRowTemplate(row, index, rowCache));
-    });
+  override ngAfterViewInit() {
+    if (this.rowElements)
+      this.rowElements.changes.subscribe((rows: QueryList<ElementRef>) => {
+        const rowCache = {};
+        rows.forEach((row: ElementRef, index) => this.updateRowTemplate(row, index, rowCache));
+      });
   }
 }
 EditGridComponent.MaterialComponent = MaterialEditGridComponent;

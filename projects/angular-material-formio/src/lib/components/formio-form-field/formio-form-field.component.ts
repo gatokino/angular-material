@@ -7,12 +7,16 @@ import { LabelPositions } from '../../const/LabelPositions';
   styleUrls: ['./formio-form-field.component.css']
 })
 export class FormioFormFieldComponent {
-  private _instance;
+  private _instance? : any;
   public labelPositions = LabelPositions;
-  @Input() labelTemplate: TemplateRef<any>;
+  @Input() labelTemplate?: TemplateRef<any>;
   @Input() renderTopLabel = false;
   @Input() showDescription = true;
   @Input() renderElementOnly = false;
+
+  @Input() componentTemplate: TemplateRef<any> | null = null;
+  componentTemplateContext : any;
+
 
   @Input('instance')
   set instance(instance) {
@@ -26,9 +30,7 @@ export class FormioFormFieldComponent {
     return this._instance;
   }
 
-  @Input() componentTemplate: TemplateRef<any>;
-  componentTemplateContext;
-
+ 
   hasLabel(labelPositions?: string[]) {
     const { component } = this.instance;
     const hasNoLabel = !component.label || component.hideLabel;
@@ -43,5 +45,6 @@ export class FormioFormFieldComponent {
     if (labelPositions.includes(component.labelPosition)) {
       return true;
     }
+    return false;
   }
 }

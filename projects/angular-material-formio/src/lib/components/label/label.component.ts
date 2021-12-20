@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./label.component.css']
 })
 export class LabelComponent {
-  @Input() instance;
+  @Input() instance? : any;
 }

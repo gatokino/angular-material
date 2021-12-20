@@ -33,18 +33,18 @@ export class MaterialSelectBoxesComponent extends MaterialRadioComponent {
   public value: any = {};
   public disabled = false;
 
-  setInstance(instance) {
-    instance.component.values.forEach((option) => {
+  override setInstance(instance : any) {
+    instance.component.values.forEach((option : any) => {
       this.value[option.value] = false;
     });
     super.setInstance(instance);
   }
 
-  getValue() {
+  override getValue() {
     return this.value;
   }
 
-  setValue(value) {
+  override setValue(value : any) {
     const normalizedValue = this.instance.normalizeValue(value);
     for (const prop in normalizedValue) {
       if (normalizedValue.hasOwnProperty(prop)) {
@@ -53,11 +53,11 @@ export class MaterialSelectBoxesComponent extends MaterialRadioComponent {
     }
   }
 
-  setDisabled(disabled) {
+  override setDisabled(disabled : any) {
     this.disabled = !!disabled;
   }
 
-  onChange() {
+  override onChange() {
     this.instance.updateValue(this.getValue(), {modified: true});
     this.instance.triggerChange({modified: true});
   }

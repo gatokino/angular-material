@@ -4,8 +4,8 @@ import SurveyComponent from 'formiojs/components/survey/Survey.js';
 import { FormControl } from '@angular/forms';
 
 @Component({
-    selector: 'mat-formio-survey',
-    template: `
+  selector: 'mat-formio-survey',
+  template: `
 
       <mat-formio-form-field
               [instance]="instance"
@@ -58,7 +58,7 @@ import { FormControl } from '@angular/forms';
 })
 export class MaterialSurveyComponent extends MaterialComponent {
   public controls: any = {};
-  getFormControl(question) {
+  getFormControl(question: any) {
     if (!this.controls[question]) {
       this.controls[question] = new FormControl();
       if (this.instance.shouldDisabled) {
@@ -68,7 +68,7 @@ export class MaterialSurveyComponent extends MaterialComponent {
     return this.controls[question];
   }
 
-  setDisabled(disabled) {
+  override setDisabled(disabled: any) {
     const method = disabled ? 'disable' : 'enable';
     for (const question in this.controls) {
       if (this.controls.hasOwnProperty(question)) {
@@ -77,8 +77,8 @@ export class MaterialSurveyComponent extends MaterialComponent {
     }
   }
 
-  getValue() {
-    const values = {};
+  override getValue() {
+    const values: { [x: string]: any; } = {};
     for (const question in this.controls) {
       if (this.controls.hasOwnProperty(question)) {
         values[question] = this.controls[question].value || false;
@@ -87,7 +87,7 @@ export class MaterialSurveyComponent extends MaterialComponent {
     return values;
   }
 
-  setValue(value) {
+  override setValue(value: any) {
     for (const question in value) {
       if (value.hasOwnProperty(question)) {
         const control = this.getFormControl(question);
@@ -98,7 +98,7 @@ export class MaterialSurveyComponent extends MaterialComponent {
     }
   }
 
-  getUniqueName(question) {
+  getUniqueName(question: any) {
     return `${this.instance.id}-${question}`;
   }
 }

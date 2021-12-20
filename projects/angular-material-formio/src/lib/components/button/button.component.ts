@@ -9,11 +9,11 @@ import { AngularButtonsThemes, ButtonsThemes } from '../../const/ButtonsThemes';
   styleUrls: ['./button.component.css']
 })
 export class MaterialButtonComponent extends MaterialComponent {
-  public loading = false;
-  public done = false;
-  public error = false;
-  public disabled = false;
-  public clicked = false;
+  public loading: boolean = false;
+  public done: boolean = false;
+  public error: boolean = false;
+  public disabled: boolean = false;
+  public clicked: boolean = false;
 
   get color() {
     if (this.error) {
@@ -49,16 +49,16 @@ export class MaterialButtonComponent extends MaterialComponent {
     return className;
   }
 
-  onClick(event) {
+  onClick(event: any) {
     this.clicked = true;
     this.instance.onClick(event);
   }
 
-  getValue() {
+  override getValue() {
     return this.clicked;
   }
 
-  setState(loading, error, done) {
+  setState(loading: boolean, error: boolean, done: boolean) {
     this.loading = loading;
     this.done = done;
     this.error = error;
@@ -73,7 +73,7 @@ export class MaterialButtonComponent extends MaterialComponent {
     return icon.replace(this.getIconFontSet(icon), '');
   }
 
-  setInstance(instance) {
+  override setInstance(instance: any) {
     const retVal = super.setInstance(instance);
     this.disabled = instance.shouldDisabled;
     instance.on('submitButton', () => this.setState(true, false, false));
@@ -81,7 +81,7 @@ export class MaterialButtonComponent extends MaterialComponent {
     instance.on('submitError', () => this.setState(false, true, false));
     instance.on('requestButton', () => this.setState(true, false, false));
     instance.on('requestDone', () => this.setState(false, false, true));
-    instance.on('change', (event) => {
+    instance.on('change', (event: any) => {
       this.disabled = this.instance.shouldDisabled || (this.instance.component.disableOnInvalid && !event.isValid);
       if (event.isValid) {
         this.loading = false;

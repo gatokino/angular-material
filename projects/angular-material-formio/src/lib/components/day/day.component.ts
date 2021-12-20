@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MaterialComponent } from '../MaterialComponent';
 import DayComponent from 'formiojs/components/day/Day.js';
 import { momentDate } from 'formiojs/utils/utils.js';
-DayComponent.prototype.getFieldValue = function(name) {
+DayComponent.prototype.getFieldValue = function (name: any) {
   return this.refs[name] ? this.refs[name].value : '';
 };
 
@@ -55,14 +55,14 @@ export class MaterialDayComponent extends MaterialComponent {
   public dayControl: FormControl = new FormControl();
   public monthControl: FormControl = new FormControl();
   public yearControl: FormControl = new FormControl();
-  setInstance(instance) {
+  override setInstance(instance: any) {
     // Add stub methods to match dom elements.
-    (this.dayControl as any).setAttribute = () => {};
-    (this.dayControl as any).removeAttribute = () => {};
-    (this.monthControl as any).setAttribute = () => {};
-    (this.monthControl as any).removeAttribute = () => {};
-    (this.yearControl as any).setAttribute = () => {};
-    (this.yearControl as any).removeAttribute = () => {};
+    (this.dayControl as any).setAttribute = () => { };
+    (this.dayControl as any).removeAttribute = () => { };
+    (this.monthControl as any).setAttribute = () => { };
+    (this.monthControl as any).removeAttribute = () => { };
+    (this.yearControl as any).setAttribute = () => { };
+    (this.yearControl as any).removeAttribute = () => { };
     instance.refs = {
       day: this.dayControl,
       month: this.monthControl,
@@ -71,7 +71,7 @@ export class MaterialDayComponent extends MaterialComponent {
     return super.setInstance(instance);
   }
 
-  setDisabled(disabled) {
+  override setDisabled(disabled: any) {
     if (disabled) {
       this.dayControl.disable();
       this.monthControl.disable();
@@ -83,11 +83,11 @@ export class MaterialDayComponent extends MaterialComponent {
     }
   }
 
-  getValue() {
+  override getValue() {
     return this.instance.getDate();
   }
 
-  setValue(value) {
+  override setValue(value : any) {
     if (value) {
       this.dayControl.setValue(parseInt(momentDate(value).format('D')));
       this.monthControl.setValue(parseInt(momentDate(value).format('M')));

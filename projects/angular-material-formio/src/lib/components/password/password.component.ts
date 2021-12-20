@@ -6,7 +6,7 @@ import PasswordComponent from 'formiojs/components/password/Password.js';
   template: TEXTFIELD_TEMPLATE
 })
 export class MaterialPasswordComponent extends MaterialTextfieldComponent {
-  public inputType = 'password';
+  public override inputType = 'password';
 }
 PasswordComponent.MaterialComponent = MaterialPasswordComponent;
 export { PasswordComponent };

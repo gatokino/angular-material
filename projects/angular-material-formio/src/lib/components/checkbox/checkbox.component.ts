@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MaterialComponent } from '../MaterialComponent';
 import CheckboxComponent from 'formiojs/components/checkbox/Checkbox.js';
-import _ from 'lodash';
+import isNull from 'lodash-es/isNull';
 
 @Component({
   selector: 'mat-formio-checkbox',
@@ -22,8 +22,8 @@ import _ from 'lodash';
   styles:['::ng-deep .mat-checkbox.validation-error .mat-checkbox-frame {border-color: red; }']
 })
 export class MaterialCheckboxComponent extends MaterialComponent {
-  getValue() {
-    return _.isNil(this.control.value) ? '' : this.control.value;
+  override getValue() {
+    return isNull(this.control.value) ? '' : this.control.value;
   }
 }
 CheckboxComponent.MaterialComponent = MaterialCheckboxComponent;

@@ -1,7 +1,7 @@
 import { Component, Optional, ChangeDetectorRef, ViewContainerRef, ViewChild, ComponentFactoryResolver, NgZone, Input, Output } from '@angular/core';
 import { FormioAppConfig, FormioBaseComponent } from '@formio/angular';
 import { Form } from './renderer';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 @Component({
   selector: 'mat-formio',
   styles: [
@@ -44,22 +44,25 @@ import { get } from 'lodash';
   `
 })
 export class FormioComponent extends FormioBaseComponent {
-  @ViewChild('formio', {static: true, read: ViewContainerRef}) formioViewContainer: ViewContainerRef;
+  @ViewChild('formio', {static: true, read: ViewContainerRef}) formioViewContainer?: ViewContainerRef;
   constructor(
     private resolver: ComponentFactoryResolver,
     private cd: ChangeDetectorRef,
-    public ngZone: NgZone,
-    @Optional() public config: FormioAppConfig
+    public override ngZone: NgZone,
+    @Optional() public override config: FormioAppConfig
   ) {
     super(ngZone, config);
   }
 
-  getRendererOptions(): any {
+  override getRendererOptions(): any {
     const rendererOptions = super.getRendererOptions();
     return {...rendererOptions, validateOnInit: get(rendererOptions, 'validateOnInit', true) }
   }
 
-  createRenderer() {
+  override createRenderer() {
+    if(!this.form){
+      return null;
+    }
     const options = this.getRendererOptions();
     const flags = {
       validateOnInit: options.validateOnInit

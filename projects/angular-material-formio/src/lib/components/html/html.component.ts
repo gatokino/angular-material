@@ -7,13 +7,15 @@ import HtmlComponent from 'formiojs/components/html/HTML.js';
   template: `<div #htmlBody></div>`
 })
 export class MaterialHtmlComponent extends MaterialComponent implements AfterViewInit {
-  @ViewChild('htmlBody') htmlBody: ElementRef;
+  @ViewChild('htmlBody') htmlBody?: ElementRef;
 
-  ngAfterViewInit() {
+  override ngAfterViewInit() {
     super.ngAfterViewInit();
     if (this.instance.component.refreshOnChange) {
       this.instance.checkRefreshOn = () => {
-        this.htmlBody.nativeElement.innerHTML = this.instance.renderContent();
+        if (this.htmlBody) {
+          this.htmlBody.nativeElement.innerHTML = this.instance.renderContent();
+        }
       };
     }
   }

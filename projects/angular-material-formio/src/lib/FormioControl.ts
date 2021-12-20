@@ -1,28 +1,27 @@
-import { FormControl, ValidationErrors } from '@angular/forms';
-import unescape from 'lodash/unescape';
+import { AbstractControl, AsyncValidatorFn, FormControl, ValidationErrors } from '@angular/forms';
+import unescape from 'lodash-es/unescape';
 
 // @dynamic
 export class FormioControl extends FormControl {
   public instance: any;
-
-  static customValidator(control: FormioControl): Promise<ValidationErrors> {
+   
+  static customValidator(control: AbstractControl): Promise<ValidationErrors | null> {
     return new Promise((resolve) => {
-      if (control.instance) {
+      if ((control instanceof FormioControl) && control.instance) {
         control.instance.validateResolve = resolve;
       } else {
         resolve(null);
       }
     });
   }
-
-  constructor(...args) {
+  constructor(...args: undefined[]) {
     super(args[0], [], [FormioControl.customValidator.bind(FormioControl)]);
   }
 
   setInstance(instance: any) {
     this.instance = instance;
     const setCustomValidity = instance.setCustomValidity;
-    instance.setCustomValidity = (message: any, dirty, external, isWarning = false) => {
+    instance.setCustomValidity = (message: any, dirty : any, external : any, isWarning = false) => {
       let decodedMessage = message;
       if (Array.isArray(message)) {
         decodedMessage = message.map(msg => Object.assign(msg, { message: unescape(msg.message) }));

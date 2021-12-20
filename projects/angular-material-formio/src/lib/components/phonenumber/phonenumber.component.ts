@@ -6,7 +6,7 @@ import PhoneNumberComponent from 'formiojs/components/phonenumber/PhoneNumber.js
   template: TEXTFIELD_TEMPLATE
 })
 export class MaterialPhoneNumberComponent extends MaterialTextfieldComponent {
-  public inputType = 'text';
+  public override inputType = 'text';
 }
 PhoneNumberComponent.MaterialComponent = MaterialPhoneNumberComponent;
 export { PhoneNumberComponent };
